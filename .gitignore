@@ -1,0 +1,10 @@
+# Bỏ qua các file thực thi biên dịch của Go
+*.exe
+*.exe~
+*.dll
+*.so
+main
+
+# Bỏ qua folder rác của VS Code / Windows
+.vscode/
+Thumbs.db
