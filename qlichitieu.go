@@ -1,50 +1,94 @@
 package main
 
 import (
-	"bufio"
 	"fmt"
-	"os"
-	"strconv"
-	"strings"
+
+	"example.com/hello/utils"
 )
 
-func main() {
-	scanner := bufio.NewScanner(os.Stdin)
-	var thunhap = make(map[string]int)
-	var chitieu = make(map[string]int)
+type GiaoDich struct {
+	TieuDe string
+	SoTien int
+}
+
+var thunhapList []GiaoDich
+var chitieuList []GiaoDich
+
+func nhapthunhap() {
+	tieude := utils.ReadInput("Nhập tiêu đề thu nhập: ")
+	sotien := utils.GetPostiveInt("Nhập số tiền :")
+	thunhap := GiaoDich{
+		TieuDe: tieude,
+		SoTien: sotien,
+	}
+	thunhapList = append(thunhapList, thunhap)
+}
+func nhapchitieu() {
+	tieude := utils.ReadInput("Nhập tiêu đề chi tiêu: ")
+	sotien := utils.GetPostiveInt("Nhập số tiền:")
+	chitieu := GiaoDich{
+		TieuDe: tieude,
+		SoTien: sotien,
+	}
+	chitieuList = append(chitieuList, chitieu)
+}
+func danhsachthunhap() {
+	fmt.Println("---Danh sách thu nhập---")
+	if len(thunhapList) == 0 {
+		fmt.Println("Chưa có khoản thu nào.")
+		return
+	}
+	for _, t := range thunhapList {
+		fmt.Println(t)
+	}
+}
+func danhsachchitieu() {
+	fmt.Println("---Danh sách chi tiêu---")
+	if len(chitieuList) == 0 {
+		fmt.Println("Chưa có khoản chi nào.")
+		return
+	}
+	for _, c := range chitieuList {
+		fmt.Println(c)
+	}
+}
+func danhsach() {
 	tongthu := 0
 	tongchi := 0
-	//1 nhập số tiền
-	for {
-		fmt.Print("Nhập tiêu đề thu nhập : ")
-		scanner.Scan()
-		tdthu := strings.TrimSpace(scanner.Text())
-		if tdthu == "" {
-			break
-		}
-		fmt.Print("Số tiền : ")
-		scanner.Scan()
-		stthu, _ := strconv.Atoi(strings.TrimSpace(scanner.Text()))
-		tongthu = tongthu + stthu
-		thunhap[tdthu] = stthu
+	for _, values := range thunhapList {
+		tongthu = tongthu + values.SoTien
 	}
-	for {
-		fmt.Print("Nhập tiêu đề chi tiêu : ")
-		scanner.Scan()
-		tdchi := strings.TrimSpace(scanner.Text())
-		if tdchi == "" {
-			break
-		}
-		fmt.Print("Số tiền : ")
-		scanner.Scan()
-		stchi, _ := strconv.Atoi(strings.TrimSpace(scanner.Text()))
-		tongchi = tongchi + stchi
-		chitieu[tdchi] = stchi
+	for _, values := range chitieuList {
+		tongchi = tongchi + values.SoTien
 	}
-	//2 hiển thị toàn bộ thông tin
-	fmt.Println("Tổng thu nhập : ", tongthu)
-	fmt.Println("Tổng chi tiêu : ", tongchi)
-	fmt.Println("Số dư : ", tongthu-tongchi)
-	fmt.Println("Thu nhập ", thunhap)
-	fmt.Println("Chi tiêu ", chitieu)
+	fmt.Println("--------------")
+	fmt.Println("Số dư hiện tại là:", tongthu-tongchi)
+	fmt.Println("Tổng số tiền thu nhập là:", tongthu)
+	fmt.Println("Tổng số tiền đã chi là:", tongchi)
+	danhsachthunhap()
+	danhsachchitieu()
+}
+func main() {
+	for {
+		utils.ClearScreen()
+		fmt.Println("---CHƯƠNG TRÌNH QUẢN LÝ CHI TIÊU---")
+		fmt.Println("1.Nhập số tiền thu nhập")
+		fmt.Println("2.Nhập số tiền chi tiêu")
+		fmt.Println("3.Hiển thị số dư và giao dịch")
+		fmt.Println("4.Thoát chương trình")
+		choice := utils.GetPostiveInt("Mời chọn chức năng:")
+		switch choice {
+		case 1:
+			nhapthunhap()
+		case 2:
+			nhapchitieu()
+		case 3:
+			danhsach()
+		case 4:
+			return
+		default:
+			fmt.Println("Lựa chọn không hợp lệ")
+		}
+		utils.ReadInput("\nNhấn phím Enter để tiếp tục...")
+	}
 }
